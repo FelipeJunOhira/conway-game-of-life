@@ -7,10 +7,12 @@ import GameMap from './views/game_map';
 
 import CellMap from './models/cell_map';
 
+import ConwayGameOfLifeRule from './models/rules/conway_game_of_life_rule';
+
 $(document).ready(function() {
 
   let leftMenu = new LeftMenu('#left-menu');
-  let cellMap = new CellMap(80, 100);
+  let cellMap = new CellMap(80, 100, ConwayGameOfLifeRule);
   let gameMap = new GameMap({
     selector: '#game-map',
     rows: cellMap.rows,

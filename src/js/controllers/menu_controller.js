@@ -31,7 +31,7 @@ export default class MenuController {
     this._timeoutIndex = setTimeout(() => {
       this._updateGame();
       this._scheduleNextGameTick();
-    }, 100);
+    }, 25);
   }
 
   _updateGame() {

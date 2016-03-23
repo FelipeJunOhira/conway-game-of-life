@@ -27,9 +27,11 @@ body {
 .cell {
   position: absolute;
   box-sizing: border-box;
-  border: 1px solid black;
+  border: 1px solid #CCC;
+}
 
-  cursor: pointer;
+.cell.cell-dead:hover {
+  background: black;
 }
 
 .cell.cell-dead {
@@ -38,6 +40,10 @@ body {
 
 .cell.cell-live {
   background: gray;
+}
+
+.cell.cell-live:hover {
+  background: black;
 }
 
 .clearfix {
