@@ -1,8 +1,8 @@
 export default class MenuController {
 
-  constructor({ leftMenu, world, gameMap }) {
+  constructor({ leftMenu, cellMap, gameMap }) {
     this.leftMenu = leftMenu;
-    this.world = world;
+    this.cellMap = cellMap;
     this.gameMap = gameMap;
 
     this._setup();
@@ -35,12 +35,8 @@ export default class MenuController {
   }
 
   _updateGame() {
-    this.world.update();
-    this._updateGameMap();
-  }
-
-  _updateGameMap() {
-    this.world.forEachCell(this._updateCellView.bind(this));
+    this.cellMap.updateAllCells();
+    this.cellMap.forEachCell(this._updateCellView.bind(this));
   }
 
   _updateCellView(cell) {
@@ -64,15 +60,15 @@ export default class MenuController {
   }
 
   _resetGame() {
-    this.world.reset();
-    this._updateGameMap();
+    this.cellMap.resetAllCells();
+    this.cellMap.forEachCell(this._updateCellView.bind(this));
 
     this.onStopButtonClick();
   }
 
   // Cell Listener
   onCellClicked(cellView) {
-    let cellSelected = this.world.getCellOnPosition(cellView.position);
+    let cellSelected = this.cellMap.getCellOnPosition(cellView.position);
     cellSelected.toogleState();
     this._updateCellView(cellSelected);
   }

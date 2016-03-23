@@ -5,23 +5,25 @@ import MenuController from './controllers/menu_controller';
 import LeftMenu from './views/left_menu';
 import GameMap from './views/game_map';
 
-import CellMap from './models/cell_map';
+// import CellMap from './models/cell_map';
 
-import ConwayGameOfLifeRule from './models/rules/conway_game_of_life_rule';
+import ConwayWorld from './world/conway/conway_world';
 
 $(document).ready(function() {
 
+  let world = new ConwayWorld(80, 100);
+
   let leftMenu = new LeftMenu('#left-menu');
-  let cellMap = new CellMap(80, 100, ConwayGameOfLifeRule);
+  // let cellMap = new CellMap(80, 100, ConwayGameOfLifeRule);
   let gameMap = new GameMap({
     selector: '#game-map',
-    rows: cellMap.rows,
-    columns: cellMap.columns
+    rows: world.rows,
+    columns: world.columns
   });
 
   let menuController = new MenuController({
     leftMenu: leftMenu,
-    cellMap: cellMap,
+    world: world,
     gameMap: gameMap
   });
 

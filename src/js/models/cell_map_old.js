@@ -1,15 +1,19 @@
 import Position from '../value_objects/position';
 
+import Cell from './cell';
+
 export default class CellMap {
 
-  constructor(rows, columns, Cell) {
+  constructor(rows, columns, GameRule) {
     this.rows = rows;
     this.columns = columns;
 
-    this._buildMapForCell(Cell);
+    this.gameRule = new GameRule(this);
+
+    this._buildInnerStruct();
   }
 
-  _buildMapForCell(Cell) {
+  _buildInnerStruct() {
     this._cells = [];
     for (let j = 0; j < this.rows; j++) {
       for (let i = 0; i < this.columns; i++) {
@@ -18,8 +22,25 @@ export default class CellMap {
     }
   }
 
+  updateAllCells() {
+    this._scheduleAllCells();
+    this._updateAllCellState();
+  }
+
+  _scheduleAllCells() {
+    this.gameRule.scheduleAllCells();
+  }
+
   getCellOnPosition(position) {
     return this._cells[position.y * this.columns + position.x];
+  }
+
+  resetAllCells() {
+    this.forEachCell(cell => { cell.setDead(); });
+  }
+
+  _updateAllCellState() {
+    this.forEachCell(cell => { cell.updateState(); });
   }
 
   forEachCell(callback) {
