@@ -3,8 +3,10 @@ import Position from '../../value_objects/position';
 import CellMap from '../../models/cell_map';
 
 // World Cell States
-let DEAD = 'dead';
-let LIVE = 'live';
+let EMPTY = 'empty';
+let CONDUCTOR = 'conductor';
+let ELETRON = 'eletron';
+let ELETRON_TAIL = 'eletron-tail';
 
 export default class ConwayWorld {
 
@@ -12,13 +14,13 @@ export default class ConwayWorld {
     this.rows = rows;
     this.columns = columns;
 
-    this.states = [DEAD, LIVE];
+    this.states = [EMPTY, CONDUCTOR, ELETRON, ELETRON_TAIL];
 
     this._buildCellMap();
   }
 
   _buildCellMap() {
-    this.cellMap = new CellMap(this.rows, this.columns, DEAD);
+    this.cellMap = new CellMap(this.rows, this.columns, EMPTY);
   }
 
   update() {
@@ -33,19 +35,23 @@ export default class ConwayWorld {
   }
 
   _scheduleCellState(cell) {
-    let numberOfLiveNeighbours = this._getNumberOfLiveNeighboursOfCell(cell);
 
-    if (numberOfLiveNeighbours < 2 || numberOfLiveNeighbours > 3) {
-      cell.setNextState(DEAD);
-    } else if (numberOfLiveNeighbours === 3) {
-      cell.setNextState(LIVE);
-    }
+		if (cell.hasState(ELETRON)) {
+			cell.setNextState(ELETRON_TAIL);
+		} else if (cell.hasState(ELETRON_TAIL)) {
+			cell.setNextState(CONDUCTOR);
+		} else if (cell.hasState(CONDUCTOR)) {
+	    let numberOfNeighboursEletrons = this._getNumberOfNeighboursEletronsOfCell(cell);
+			if (numberOfNeighboursEletrons === 1 || numberOfNeighboursEletrons === 2) {
+				cell.setNextState(ELETRON);
+			}
+		}
   }
 
-  _getNumberOfLiveNeighboursOfCell(cell) {
+  _getNumberOfNeighboursEletronsOfCell(cell) {
     let neighboursPositions = this._getValidNeighboursPositions(cell.position);
     let liveNeighboursCells = neighboursPositions.filter(position => {
-      return this.cellMap.getCellOnPosition(position).hasState(LIVE);
+      return this.cellMap.getCellOnPosition(position).hasState(ELETRON);
     });
 
     return liveNeighboursCells.length;

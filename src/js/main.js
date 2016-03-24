@@ -6,10 +6,11 @@ import LeftMenu from './views/left_menu';
 import GameMap from './views/game_map';
 
 import ConwayWorld from './world/conway/conway_world';
+import WireWorld from './world/wire/wire_world';
 
 $(document).ready(function() {
 
-  let world = new ConwayWorld(80, 100);
+  let world = new WireWorld(80, 100);
 
   let leftMenu = new LeftMenu({
     selector: '#left-menu',
