@@ -1,8 +1,7 @@
 import Position from '../../value_objects/position';
 
-import CellMap from '../../models/cell_map';
-
 import Cell from '../../models/cell';
+import CellMap from '../../models/cell_map';
 
 // World Cell States
 let DEAD = 'dead';
@@ -46,32 +45,21 @@ export default class ConwayWorld {
 
   _getNumberOfLiveNeighboursOfCell(cell) {
     let neighboursPositions = this._getValidNeighboursPositions(cell.position);
+    let liveNeighboursCells = neighboursPositions.filter(position => {
+      return this.cellMap.getCellOnPosition(position).hasState(LIVE);
+    });
 
-    return neighboursPositions.filter(position => {
-      return this.cellMap.getCellOnPosition(position).state === LIVE;
-    }).length;
+    return liveNeighboursCells.length;
   }
 
   _getValidNeighboursPositions(position) {
-    return this._buildNeighboursPositions(position).filter(neighbourPosition => {
-      return neighbourPosition.x >= 0 &&
-              neighbourPosition.x < this.cellMap.columns &&
-              neighbourPosition.y >= 0 &&
-              neighbourPosition.y < this.cellMap.rows;
-    });
-  }
-
-  _buildNeighboursPositions(position) {
-    return [
-      new Position(position.x - 1,  position.y - 1),
-      new Position(position.x - 1,  position.y    ),
-      new Position(position.x - 1,  position.y + 1),
-      new Position(position.x,      position.y - 1),
-      new Position(position.x,      position.y + 1),
-      new Position(position.x + 1,  position.y - 1),
-      new Position(position.x + 1,  position.y    ),
-      new Position(position.x + 1,  position.y + 1),
-    ];
+    return Position.getMooreNeighborhoodForPosition(position)
+      .filter(neighbourPosition => {
+        return neighbourPosition.x >= 0 &&
+                neighbourPosition.x < this.cellMap.columns &&
+                neighbourPosition.y >= 0 &&
+                neighbourPosition.y < this.cellMap.rows;
+      });
   }
 
   _updateAllCells() {
