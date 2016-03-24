@@ -2,13 +2,19 @@ import Position from '../../value_objects/position';
 
 import CellMap from '../../models/cell_map';
 
-import Cell from './cell/cell';
+import Cell from '../../models/cell';
+
+// World Cell States
+let DEAD = 'dead';
+let LIVE = 'live';
 
 export default class ConwayWorld {
 
   constructor(rows, columns) {
     this.rows = rows;
     this.columns = columns;
+
+    this.states = [DEAD, LIVE];
 
     this._buildCellMap();
   }
@@ -32,21 +38,18 @@ export default class ConwayWorld {
     let numberOfLiveNeighbours = this._getNumberOfLiveNeighboursOfCell(cell);
 
     if (numberOfLiveNeighbours < 2 || numberOfLiveNeighbours > 3) {
-      cell.scheduleDeadState();
+      cell.setNextState(DEAD);
     } else if (numberOfLiveNeighbours === 3) {
-      cell.scheduleLiveState();
-    } else {
-      cell.cancelStateChange();
+      cell.setNextState(LIVE);
     }
   }
 
   _getNumberOfLiveNeighboursOfCell(cell) {
     let neighboursPositions = this._getValidNeighboursPositions(cell.position);
 
-    return neighboursPositions.reduce((sum, neighbourPosition) => {
-      this.cellMap.getCellOnPosition(neighbourPosition).isLive() ? sum++ : null;
-      return sum;
-    }, 0);
+    return neighboursPositions.filter(position => {
+      return this.cellMap.getCellOnPosition(position).state === LIVE;
+    }).length;
   }
 
   _getValidNeighboursPositions(position) {

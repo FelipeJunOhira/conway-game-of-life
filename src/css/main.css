@@ -24,25 +24,36 @@ body {
   box-sizing: border-box;
 }
 
+#state-selector {
+  position: relative;
+  box-sizing: border-box;
+}
+
 .cell {
   position: absolute;
   box-sizing: border-box;
   border: 1px solid #CCC;
 }
 
-.cell.cell-dead:hover {
-  background: black;
-}
-
-.cell.cell-dead {
+.cell-dead {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #CCC;
   background: white;
 }
 
-.cell.cell-live {
+.cell-dead:hover {
+  background: black;
+}
+
+.cell-live {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #CCC;
   background: gray;
 }
 
-.cell.cell-live:hover {
+.cell-live:hover {
   background: black;
 }
 

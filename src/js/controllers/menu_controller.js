@@ -5,10 +5,6 @@ export default class MenuController {
     this.world = world;
     this.gameMap = gameMap;
 
-    this._setup();
-  }
-
-  _setup() {
     this._bindViewEvents();
   }
 
@@ -44,11 +40,7 @@ export default class MenuController {
   }
 
   _updateCellView(cell) {
-    if (cell.isLive()) {
-      this.gameMap.setPositionAsLive(cell.position);
-    } else {
-      this.gameMap.setPositionAsDead(cell.position);
-    }
+    this.gameMap.updateCell(cell)
   }
 
   onStopButtonClick() {
@@ -73,7 +65,7 @@ export default class MenuController {
   // Cell Listener
   onCellClicked(cellView) {
     let cellSelected = this.world.getCellOnPosition(cellView.position);
-    cellSelected.toogleState();
+    cellSelected.setState(this.leftMenu.selectedState);
     this._updateCellView(cellSelected);
   }
 
