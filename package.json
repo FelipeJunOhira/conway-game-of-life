@@ -9,7 +9,7 @@
     "build": "npm run build:js && npm run build:html && npm run build:css",
     "build:js": "webpack",
     "build:html": "rsync -a src/main.html build",
-    "build:css": "rsync -a src/css build",
+    "build:css": "node-sass src/css/main.sass build/css/main.css",
     "release": "npm run release:js && npm run build:html && npm run build:css",
     "release:js": "webpack --optimize-minimize",
     "clean": "rm -rf build",
@@ -17,7 +17,7 @@
     "watch": "npm run watch:js & npm run watch:html & npm run watch:css",
     "watch:js": "webpack --watch",
     "watch:html": "watch-run -p 'src/main.html' npm run build:html",
-    "watch:css": "watch-run -p 'src/css/main.css' npm run build:css"
+    "watch:css": "watch-run -p 'src/css/main.sass' npm run build:css"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +25,7 @@
     "babel-core": "6.4.0",
     "babel-loader": "6.2.1",
     "babel-preset-es2015": "6.3.13",
+    "node-sass": "3.4.2",
     "watch-run": "1.2.4",
     "webpack": "1.12.10"
   },

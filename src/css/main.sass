@@ -1,0 +1,70 @@
+body
+	display: -webkit-flex
+	display: -ms-flexbox
+	display: flex
+
+#left-menu
+	box-sizing: border-box
+	height: inherit
+	width: 200px
+	border: 1px solid black
+	padding: 10px
+	button
+  	display: block
+  	margin: 10px auto
+  	cursor: pointer
+
+#game-map, #state-selector
+	position: relative
+	box-sizing: border-box
+
+.clearfix
+	clear: both
+
+
+// Cells
+
+.cell
+	position: absolute
+	box-sizing: border-box
+	border: 1px solid #CCC
+
+/* Conway Game of Life
+
+.cell-dead
+	@extend .cell
+	background: white
+	&:hover
+  	background: black
+
+.cell-live
+	@extend .cell
+	background: gray
+	&:hover
+  	background: black
+
+/* Wire World
+
+.cell-empty
+	@extend .cell
+	background: white
+	&:hover
+  	background: black
+
+.cell-conductor
+	@extend .cell
+	background: gray
+	&:hover
+  	background: black
+
+.cell-eletron
+	@extend .cell
+	background: yellow
+	&:hover
+  	background: black
+
+.cell-eletron-tail
+	@extend .cell
+	background: blue
+	&:hover
+  	background: black
