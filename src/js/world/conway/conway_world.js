@@ -1,38 +1,24 @@
-import Position from '../../value_objects/position';
-
-import CellMap from '../../models/cell_map';
+import BaseWorld from '../base_world';
 
 // World Cell States
 let DEAD = 'dead';
 let LIVE = 'live';
 
-export default class ConwayWorld {
+export default class ConwayWorld extends BaseWorld {
 
   constructor(rows, columns) {
-    this.rows = rows;
-    this.columns = columns;
-
-    this.states = [DEAD, LIVE];
-
-    this._buildCellMap();
+    super(rows, columns);
   }
 
-  _buildCellMap() {
-    this.cellMap = new CellMap(this.rows, this.columns, DEAD);
+  getWorldStates() {
+    return [DEAD, LIVE];
   }
 
-  update() {
-    this._scheduleAllCells();
-    this._updateAllCells();
+  getDefaultCellState() {
+    return DEAD;
   }
 
-  _scheduleAllCells() {
-    this.cellMap.forEachCell(cell => {
-      this._scheduleCellState(cell);
-    });
-  }
-
-  _scheduleCellState(cell) {
+  scheduleCellState(cell) {
     let numberOfLiveNeighbours = this._getNumberOfLiveNeighboursOfCell(cell);
 
     if (numberOfLiveNeighbours < 2 || numberOfLiveNeighbours > 3) {
@@ -43,38 +29,9 @@ export default class ConwayWorld {
   }
 
   _getNumberOfLiveNeighboursOfCell(cell) {
-    let neighboursPositions = this._getValidNeighboursPositions(cell.position);
-    let liveNeighboursCells = neighboursPositions.filter(position => {
-      return this.cellMap.getCellOnPosition(position).hasState(LIVE);
-    });
-
-    return liveNeighboursCells.length;
-  }
-
-  _getValidNeighboursPositions(position) {
-    return Position.getMooreNeighborhoodForPosition(position)
-      .filter(neighbourPosition => {
-        return neighbourPosition.x >= 0 &&
-                neighbourPosition.x < this.cellMap.columns &&
-                neighbourPosition.y >= 0 &&
-                neighbourPosition.y < this.cellMap.rows;
-      });
-  }
-
-  _updateAllCells() {
-    this.cellMap.forEachCell(cell => { cell.updateState(); });
-  }
-
-  forEachCell(iterator) {
-    this.cellMap.forEachCell(iterator);
-  }
-
-  getCellOnPosition(position) {
-    return this.cellMap.getCellOnPosition(position);
-  }
-
-  reset() {
-    this._buildCellMap();
+    return this.getNeighboursCellsOfCell(cell)
+            .filter(cell => cell.hasState(LIVE))
+            .length;
   }
 
 }
