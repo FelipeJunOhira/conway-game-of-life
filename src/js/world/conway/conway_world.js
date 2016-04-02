@@ -19,19 +19,13 @@ export default class ConwayWorld extends BaseWorld {
   }
 
   scheduleCellState(cell) {
-    let numberOfLiveNeighbours = this._getNumberOfLiveNeighboursOfCell(cell);
+    let numberOfLiveNeighbours = this.countNeighbourCellsWithState(cell, LIVE);
 
     if (numberOfLiveNeighbours < 2 || numberOfLiveNeighbours > 3) {
       cell.setNextState(DEAD);
     } else if (numberOfLiveNeighbours === 3) {
       cell.setNextState(LIVE);
     }
-  }
-
-  _getNumberOfLiveNeighboursOfCell(cell) {
-    return this.getNeighboursCellsOfCell(cell)
-            .filter(cell => cell.hasState(LIVE))
-            .length;
   }
 
 }

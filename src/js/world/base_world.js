@@ -72,6 +72,12 @@ export default class BaseWorld {
     this.cellMap.forEachCell(cell => { cell.updateState(); });
   }
 
+  countNeighbourCellsWithState(cell, state) {
+    return this.getNeighboursCellsOfCell(cell)
+            .filter(cell => cell.hasState(state))
+            .length;
+  }
+
   getNeighboursCellsOfCell(cell) {
     return this._getNeighboursPositionsOfPosition(cell.position)
             .map(position => this.cellMap.getCellOnPosition(position));

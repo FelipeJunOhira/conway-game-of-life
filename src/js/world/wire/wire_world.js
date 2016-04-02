@@ -36,14 +36,8 @@ export default class ConwayWorld extends BaseWorld {
   }
 
   _doesCellHasEnoughEletronsNeighbours(cell) {
-    let neighboursEletrons = this._getNumberOfNeighboursEletronsOfCell(cell);
+    let neighboursEletrons = this.countNeighbourCellsWithState(cell, ELETRON);
     return neighboursEletrons === 1 || neighboursEletrons === 2;
-  }
-
-  _getNumberOfNeighboursEletronsOfCell(cell) {
-    return this.getNeighboursCellsOfCell(cell)
-            .filter(cell => cell.hasState(ELETRON))
-            .length;
   }
 
 }
