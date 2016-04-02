@@ -10,9 +10,9 @@ body
 	border: 1px solid black
 	padding: 10px
 	button
-  	display: block
-  	margin: 10px auto
-  	cursor: pointer
+		display: block
+		margin: 10px auto
+		cursor: pointer
 
 #game-map, #state-selector
 	position: relative
@@ -35,13 +35,13 @@ body
 	@extend .cell
 	background: white
 	&:hover
-  	background: black
+		background: black
 
 .cell-live
 	@extend .cell
 	background: gray
 	&:hover
-  	background: black
+		background: black
 
 /* Wire World
 
@@ -49,22 +49,85 @@ body
 	@extend .cell
 	background: white
 	&:hover
-  	background: black
+		background: black
 
 .cell-conductor
 	@extend .cell
 	background: gray
 	&:hover
-  	background: black
+		background: black
 
 .cell-eletron
 	@extend .cell
 	background: yellow
 	&:hover
-  	background: black
+		background: black
 
 .cell-eletron-tail
 	@extend .cell
 	background: blue
 	&:hover
-  	background: black
+		background: black
+
+/* Langton's Ant
+
+.cell-white
+	@extend .cell
+	background: white
+	&:hover
+		background: blue
+
+.cell-black
+	@extend .cell
+	background: black
+	&:hover
+		background: blue
+
+.ant-cell
+	background-image: url("../img/red-ant.png")
+	background-repeat: round
+
+=rotate($angle)
+	-webkit-transform: rotate($angle)
+	-moz-transform: rotate($angle)
+	-ms-transform: rotate($angle)
+	-o-transform: rotate($angle)
+	transform: rotate($angle)
+
+.cell-white-up-ant
+	@extend .cell-white
+	@extend .ant-cell
+
+.cell-white-down-ant
+	@extend .cell-white
+	@extend .ant-cell
+	+rotate(180deg)
+
+.cell-white-right-ant
+	@extend .cell-white
+	@extend .ant-cell
+	+rotate(90deg)
+
+.cell-white-left-ant
+	@extend .cell-white
+	@extend .ant-cell
+	+rotate(270deg)
+
+.cell-black-up-ant
+	@extend .cell-black
+	@extend .ant-cell
+
+.cell-black-down-ant
+	@extend .cell-black
+	@extend .ant-cell
+	+rotate(180deg)
+
+.cell-black-right-ant
+	@extend .cell-black
+	@extend .ant-cell
+	+rotate(90deg)
+
+.cell-black-left-ant
+	@extend .cell-black
+	@extend .ant-cell
+	+rotate(270deg)
