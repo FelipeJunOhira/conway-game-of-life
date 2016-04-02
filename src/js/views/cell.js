@@ -2,8 +2,8 @@ import $ from 'jquery';
 
 export default class Cell {
 
-  static getHeightInPixels() { return 10; }
-  static getWidthInPixels() { return 10; }
+  static getHeightInPixels() { return 15; }
+  static getWidthInPixels() { return 15; }
 
   static getHtmlTemplate() { return '<div class="cell"></div>'; }
 

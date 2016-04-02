@@ -10,7 +10,7 @@ import WireWorld from './world/wire/wire_world';
 
 $(document).ready(function() {
 
-  let world = new WireWorld(80, 100);
+  let world = new WireWorld(50, 60);
 
   let leftMenu = new LeftMenu({
     selector: '#left-menu',
