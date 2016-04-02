@@ -13,6 +13,10 @@ export default class Cell {
     return this.state == state;
   }
 
+  hasStateContained(states) {
+    return states.indexOf(this.state) !== -1;
+  }
+
   setState(state) {
     this.state = state;
     this._nextState = state;

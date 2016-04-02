@@ -1,6 +1,6 @@
-import Position from '../../value_objects/position';
+import BaseWorld from '../base_world';
 
-import CellMap from '../../models/cell_map';
+import Position from '../../value_objects/position';
 
 // World Cell States
 let WHITE = 'white';
@@ -14,114 +14,104 @@ let BLACK_RIGHT_ANT = 'black-right-ant';
 let BLACK_UP_ANT = 'black-up-ant';
 let BLACK_DOWN_ANT = 'black-down-ant';
 
-export default class LangtonAntWorld {
+export default class LangtonAntWorld extends BaseWorld {
 
   constructor(rows, columns) {
-    this.rows = rows;
-    this.columns = columns;
+    super(rows, columns);
+  }
 
-    this.states = [
+  getWorldStates() {
+    return [
       WHITE, WHITE_LEFT_ANT, WHITE_RIGHT_ANT, WHITE_UP_ANT, WHITE_DOWN_ANT,
       BLACK, BLACK_LEFT_ANT, BLACK_RIGHT_ANT, BLACK_UP_ANT, BLACK_DOWN_ANT
     ];
-
-    this._buildCellMap();
   }
 
-  _buildCellMap() {
-    this.cellMap = new CellMap(this.rows, this.columns, WHITE);
+  getDefaultCellState() {
+    return WHITE;
   }
 
-  update() {
-    this._scheduleAllCells();
-    this._updateAllCells();
-  }
+  scheduleCellState(cell) {
+    if (this._doesCellHaveNoAntAround(cell)) return ;
 
-  _scheduleAllCells() {
-    this._getUpdatableCells().forEach(cell => {
-      this._scheduleCellState(cell);
-    });
-    // this.cellMap.forEachCell(cell => {
-    //   this._scheduleCellState(cell);
-    // });
-  }
-
-  _getUpdatableCells() {
-    let antCells = this.cellMap.filterCells(cell => {
-      return this._doesCellHasAnt(cell);
-    });
-    let updatableCells = [];
-    antCells.forEach(cell => {
-      updatableCells.push(cell);
-      updatableCells =
-        updatableCells.concat(this._getValidNeighboursCells(cell));
-    });
-    return updatableCells;
-  }
-
-  _doesCellHasAnt(cell) {
-    return cell.hasState(WHITE_LEFT_ANT) ||
-            cell.hasState(WHITE_RIGHT_ANT) ||
-            cell.hasState(WHITE_UP_ANT) ||
-            cell.hasState(WHITE_DOWN_ANT) ||
-            cell.hasState(BLACK_LEFT_ANT) ||
-            cell.hasState(BLACK_RIGHT_ANT) ||
-            cell.hasState(BLACK_UP_ANT) ||
-            cell.hasState(BLACK_DOWN_ANT);
-  }
-
-  _scheduleCellState(cell) {
-    if (this._shouldCellSwitchToBlack(cell)) {
+    if (this._doesCellIsWhiteAndHasAnt(cell)) {
       cell.setNextState(BLACK);
-    } else if (this._shouldCellSwitchToWhite(cell)) {
+    } else if (this._doesCellIsBlackAndHasAnt(cell)) {
       cell.setNextState(WHITE);
+    } else {
+      this.scheduleAntMovementForCell(cell);
     }
   }
 
-  _shouldCellSwitchToBlack(cell) {
-    return cell.hasState(WHITE_LEFT_ANT) ||
-            cell.hasState(WHITE_RIGHT_ANT) ||
-            cell.hasState(WHITE_UP_ANT) ||
-            cell.hasState(WHITE_DOWN_ANT);
+  _doesCellHaveNoAntAround(cell) {
+    let cellsAround = this.getNeighboursCellsOfCell(cell).concat( [cell] );
+    return cellsAround.every(cell => cell.hasStateContained([WHITE, BLACK]));
   }
 
-  _shouldCellSwitchToWhite(cell) {
-    return cell.hasState(BLACK_LEFT_ANT) ||
-            cell.hasState(BLACK_RIGHT_ANT) ||
-            cell.hasState(BLACK_UP_ANT) ||
-            cell.hasState(BLACK_DOWN_ANT);
+  _doesCellIsWhiteAndHasAnt(cell) {
+    return cell.hasStateContained([
+      WHITE_LEFT_ANT, WHITE_RIGHT_ANT, WHITE_UP_ANT, WHITE_DOWN_ANT
+    ]);
   }
 
-  _getValidNeighboursCells(cell) {
-    return this._getValidNeighboursPositions(cell.position).map(position => {
-      this.cellMap.getCellOnPosition(position);
-    });
+  _doesCellIsBlackAndHasAnt(cell) {
+    return cell.hasStateContained([
+      BLACK_LEFT_ANT, BLACK_RIGHT_ANT, BLACK_UP_ANT, BLACK_DOWN_ANT
+    ]);
   }
 
-  _getValidNeighboursPositions(position) {
-    return Position.getMooreNeighborhoodForPosition(position)
-      .filter(neighbourPosition => {
-        return neighbourPosition.x >= 0 &&
-                neighbourPosition.x < this.cellMap.columns &&
-                neighbourPosition.y >= 0 &&
-                neighbourPosition.y < this.cellMap.rows;
-      });
+  scheduleAntMovementForCell(cell) {
+    if (this.hasRightCell(cell) &&
+        this.getRightCell(cell).hasStateContained([BLACK_UP_ANT, WHITE_DOWN_ANT])) {
+          if (cell.hasState(WHITE)) cell.setNextState(WHITE_LEFT_ANT);
+          else                      cell.setNextState(BLACK_LEFT_ANT);
+    } else if (this.hasLeftCell(cell) &&
+        this.getLeftCell(cell).hasStateContained([BLACK_DOWN_ANT, WHITE_UP_ANT])) {
+          if (cell.hasState(WHITE)) cell.setNextState(WHITE_RIGHT_ANT);
+          else                      cell.setNextState(BLACK_RIGHT_ANT);
+    } else if (this.hasUpCell(cell) &&
+        this.getUpCell(cell).hasStateContained([BLACK_LEFT_ANT, WHITE_RIGHT_ANT])) {
+        if (cell.hasState(WHITE)) cell.setNextState(WHITE_DOWN_ANT);
+        else                      cell.setNextState(BLACK_DOWN_ANT);
+    } else if (this.hasDownCell(cell) &&
+        this.getDownCell(cell).hasStateContained([BLACK_RIGHT_ANT, WHITE_LEFT_ANT])) {
+          if (cell.hasState(WHITE)) cell.setNextState(WHITE_UP_ANT);
+          else                      cell.setNextState(BLACK_UP_ANT);
+    }
   }
 
-  _updateAllCells() {
-    this.cellMap.forEachCell(cell => { cell.updateState(); });
+  // Check specific neighbour cell
+  hasRightCell(cell) {
+    return this.isPositionValid(Position.getRightFrom(cell.position));
   }
 
-  forEachCell(iterator) {
-    this.cellMap.forEachCell(iterator);
+  hasLeftCell(cell) {
+    return this.isPositionValid(Position.getLeftFrom(cell.position));
   }
 
-  getCellOnPosition(position) {
-    return this.cellMap.getCellOnPosition(position);
+  hasUpCell(cell) {
+    return this.isPositionValid(Position.getUpFrom(cell.position));
   }
 
-  reset() {
-    this._buildCellMap();
+  hasDownCell(cell) {
+    return this.isPositionValid(Position.getDownFrom(cell.position));
+  }
+
+  // Get specific neighbour cell
+  getRightCell(cell) {
+    return this.cellMap.getCellOnPosition(Position.getRightFrom(cell.position));
+  }
+
+  getLeftCell(cell) {
+    return this.cellMap.getCellOnPosition(Position.getLeftFrom(cell.position));
+  }
+
+  getUpCell(cell) {
+    return this.cellMap.getCellOnPosition(Position.getUpFrom(cell.position));
+  }
+
+  getDownCell(cell) {
+    return this.cellMap.getCellOnPosition(Position.getDownFrom(cell.position));
   }
 
 }
