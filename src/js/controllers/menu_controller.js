@@ -1,14 +1,10 @@
 export default class MenuController {
 
-  constructor({ leftMenu, cellMap, gameMap }) {
+  constructor({ leftMenu, world, gameMap }) {
     this.leftMenu = leftMenu;
-    this.cellMap = cellMap;
+    this.world = world;
     this.gameMap = gameMap;
 
-    this._setup();
-  }
-
-  _setup() {
     this._bindViewEvents();
   }
 
@@ -31,20 +27,20 @@ export default class MenuController {
     this._timeoutIndex = setTimeout(() => {
       this._updateGame();
       this._scheduleNextGameTick();
-    }, 100);
+    }, 25);
   }
 
   _updateGame() {
-    this.cellMap.updateAllCells();
-    this.cellMap.forEachCell(this._updateCellView.bind(this));
+    this.world.update();
+    this._updateGameMap();
+  }
+
+  _updateGameMap() {
+    this.world.forEachCell(this._updateCellView.bind(this));
   }
 
   _updateCellView(cell) {
-    if (cell.isLive()) {
-      this.gameMap.setPositionAsLive(cell.position);
-    } else {
-      this.gameMap.setPositionAsDead(cell.position);
-    }
+    this.gameMap.updateCell(cell)
   }
 
   onStopButtonClick() {
@@ -60,16 +56,16 @@ export default class MenuController {
   }
 
   _resetGame() {
-    this.cellMap.resetAllCells();
-    this.cellMap.forEachCell(this._updateCellView.bind(this));
+    this.world.reset();
+    this._updateGameMap();
 
     this.onStopButtonClick();
   }
 
   // Cell Listener
   onCellClicked(cellView) {
-    let cellSelected = this.cellMap.getCellOnPosition(cellView.position);
-    cellSelected.toogleState();
+    let cellSelected = this.world.getCellOnPosition(cellView.position);
+    cellSelected.setState(this.leftMenu.selectedState);
     this._updateCellView(cellSelected);
   }
 

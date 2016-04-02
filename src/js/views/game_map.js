@@ -71,12 +71,8 @@ export default class GameMap {
   get cellListener() { return this._cellListener; }
   set cellListener(cellListener) { this._cellListener = cellListener; }
 
-  setPositionAsLive(position) {
-    this.getCellOnPosition(position).setAsLive();
-  }
-
-  setPositionAsDead(position) {
-    this.getCellOnPosition(position).setAsDead();
+  updateCell(cell) {
+    this.getCellOnPosition(cell.position).updateState(cell.state)
   }
 
   getCellOnPosition(position) {

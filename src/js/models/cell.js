@@ -1,35 +1,25 @@
 export default class Cell {
   constructor(position) {
     this.position = position;
-    this.setDead();
+    this.state = 'cell';
+    this._nextState = 'cell';
   }
 
   updateState() {
-    this._isLive = this._willChangeToLive;
+    this.state = this._nextState;
   }
 
-  isLive() {
-    return this._isLive;
+  hasState(state) {
+    return this.state == state;
   }
 
-  toogleState() {
-    this._isLive = !this._isLive;
+  setState(state) {
+    this.state = state;
+    this._nextState = state;
   }
 
-  setDead() {
-    this._isLive = false;
-  }
-
-  scheduleLiveState() {
-    this._willChangeToLive = true;
-  }
-
-  scheduleDeadState() {
-    this._willChangeToLive = false;
-  }
-
-  cancelStateChange() {
-    this._willChangeToLive = this._isLive;
+  setNextState(nextState) {
+    this._nextState = nextState;
   }
 
 }
